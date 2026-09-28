@@ -6,7 +6,7 @@ const allowedMediaTypes = [
   'audio/*',
   'application/pdf',
   'application/msword',
-  'application/vnd.openxmlformats-officedocument.*',
+  'application/vnd.openxmlformats-officedocument/*',
   'text/plain',
   'text/csv',
 ];
@@ -23,7 +23,9 @@ const deniedTypes = [
   'application/x-mach-binary',
 ];
 
-const config = ({ env }: Core.Config.Shared.ConfigParams): Core.Config.Plugin => ({
+const config = ({
+  env,
+}: Core.Config.Shared.ConfigParams): Core.Config.Plugin => ({
   'users-permissions': {
     config: {
       jwtManagement: 'refresh',
@@ -32,8 +34,23 @@ const config = ({ env }: Core.Config.Shared.ConfigParams): Core.Config.Plugin =>
       },
     },
   },
+
   upload: {
     config: {
+      provider: 'cloudinary',
+
+      providerOptions: {
+        cloud_name: env('CLOUDINARY_NAME'),
+        api_key: env('CLOUDINARY_KEY'),
+        api_secret: env('CLOUDINARY_SECRET'),
+      },
+
+      actionOptions: {
+        upload: {},
+        upload_stream: {},
+        delete: {},
+      },
+
       security: {
         allowedTypes: allowedMediaTypes,
         deniedTypes,
